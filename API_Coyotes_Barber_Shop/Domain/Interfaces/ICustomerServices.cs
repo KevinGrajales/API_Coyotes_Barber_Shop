@@ -5,7 +5,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Interfaces
     public interface ICustomerServices
     {
 
-        Task<IEnumerable<Customer>> GetBarbersAsync(); // this is a signature of a method
+        Task<IEnumerable<Customer>> GetCustomersAsync(); // this is a signature of a method
 
         Task<Customer> CreateCustomerAsync(Customer customer);
 
@@ -13,7 +13,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Interfaces
 
         Task<Customer> EditCustomerAsync(Customer customer);
 
-        Task<Customer> DeteleteCustomerAsync(Guid id);
+        Task<Customer> DeleteCustomerAsync(Guid id);
 
     }
 }

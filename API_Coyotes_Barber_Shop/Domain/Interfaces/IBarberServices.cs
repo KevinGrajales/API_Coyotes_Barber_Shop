@@ -13,7 +13,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Interfaces
 
         Task<Barber> EditBarberAsync(Barber barber);
 
-        Task<Barber> DeteleteBarberAsync(Guid id);
+        Task<Barber> DeleteBarberAsync(Guid id);
 
 
 

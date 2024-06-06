@@ -33,9 +33,25 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             }
         }
 
-        public Task<Barber> DeteleteBarberAsync(Guid id)
+        public async Task<Barber> DeleteBarberAsync(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var barber = await _context.Barbers.FindAsync(id);
+                if (barber == null)
+                {
+                    throw new ArgumentException("El barbero no existe.");
+                }
+                _context.Barbers.Remove(barber);
+                await _context.SaveChangesAsync();
+                return barber;
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
+
+            }
+
         }
 
         public Task<Barber> EditBarberAsync(Barber barber)

@@ -33,9 +33,24 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             }
         }
 
-        public Task<Customer> DeteleteCustomerAsync(Guid id)
+        public async Task<Customer> DeleteCustomerAsync(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var customer = await _context.Customers.FindAsync(id);
+                if (customer == null)
+                {
+                    throw new ArgumentException("El Cliente no existe.");
+                }
+                _context.Customers.Remove(customer);
+                await _context.SaveChangesAsync();
+                return customer;
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
+
+            }
         }
 
         public Task<Customer> EditCustomerAsync(Customer customer)
@@ -43,7 +58,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Customer>> GetBarbersAsync()
+        public Task<IEnumerable<Customer>> GetCustomersAsync()
         {
             throw new NotImplementedException();
         }
