@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_Coyotes_Barber_Shop.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20240606040538_Created_DB")]
-    partial class Created_DB
+    [Migration("20240606213849_CreatedDB")]
+    partial class CreatedDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,11 +30,12 @@ namespace API_Coyotes_Barber_Shop.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Celphone")
-                        .HasMaxLength(10)
-                        .HasColumnType("int");
+                    b.Property<string>("CelPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -62,11 +63,12 @@ namespace API_Coyotes_Barber_Shop.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("Celular")
-                        .HasMaxLength(10)
-                        .HasColumnType("int");
+                    b.Property<string>("CelPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Correo")
+                    b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 

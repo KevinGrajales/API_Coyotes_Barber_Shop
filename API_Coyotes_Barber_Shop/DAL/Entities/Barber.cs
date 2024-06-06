@@ -15,12 +15,13 @@ namespace API_Coyotes_Barber_Shop.DAL.Entities
         public string LastName { get; set; }
 
         [Display(Name = "CelularBarbero")] // name identifier
-        [MaxLength(10, ErrorMessage = "El campo {0} debe tener maximo 10 caracteres")] //length field
-        public int Celphone { get; set; }
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "El número de celular debe tener exactamente 10 dígitos y solo puede contener números.")]//length field
+        public string CelPhone { get; set; }
 
         [Display(Name = "CorreoBarbero")] // name identifier
+        [EmailAddress(ErrorMessage = "El formato del correo es inválido.")]
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener maximo 50 caracteres")] //length field
-        public string? Email { get; set; }
+        public string Email { get; set; }
 
     }
 }

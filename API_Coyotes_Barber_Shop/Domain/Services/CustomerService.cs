@@ -53,12 +53,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             }
         }
 
-        public Task<Customer> EditCustomerAsync(Customer customer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Customer>> GetCustomersAsync()
+        public Task<Barber> EditCustomerAsync(Guid id, string email, string celphone)
         {
             throw new NotImplementedException();
         }

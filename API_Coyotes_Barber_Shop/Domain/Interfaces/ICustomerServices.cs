@@ -11,7 +11,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Interfaces
 
         Task<Customer> GetCustomerById(Guid id);
 
-        Task<Customer> EditCustomerAsync(Customer customer);
+        Task<Barber> EditCustomerAsync(Guid id, string email, string celphone);
 
         Task<Customer> DeleteCustomerAsync(Guid id);
 

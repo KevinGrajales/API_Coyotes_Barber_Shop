@@ -54,9 +54,34 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
 
         }
 
-        public Task<Barber> EditBarberAsync(Barber barber)
+        public async Task<Barber> EditBarberAsync(Guid id, string email, string celphone)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var barber = await _context.Barbers.FindAsync(id);
+                if (barber == null)
+                {
+                    throw new ArgumentException("El barbero no existe.");
+                }
+
+                if (!string.IsNullOrWhiteSpace(email))
+                {
+                    barber.Email = email;
+                }
+
+                if (!string.IsNullOrWhiteSpace(celphone) && celphone.Length == 10 && celphone.All(char.IsDigit))
+                {
+                    barber.CelPhone = celphone;
+                }
+
+                await _context.SaveChangesAsync();
+                return barber;
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
+
+            }
         }
 
         public async Task<Barber> GetBarberById(Guid id)
@@ -65,19 +90,19 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             try
             {
                 var Barber = await _context.Barbers.FirstOrDefaultAsync(b => b.Id == id);
-            // get a object until the DB.
-            var Barber1 = await _context.Barbers.FindAsync(id);
-            var Barber2 = await _context.Barbers.FirstAsync(b => b.Id == id);
+                // get a object until the DB.
+                var Barber1 = await _context.Barbers.FindAsync(id);
+                var Barber2 = await _context.Barbers.FirstAsync(b => b.Id == id);
 
-            return Barber;
+                return Barber;
 
-        }
+            }
             catch (DbUpdateException dbUpdateException)
             {
                 throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
 
-    }
-}
+            }
+        }
 
         public async Task<IEnumerable<Barber>> GetBarbersAsync()
         {
@@ -86,14 +111,14 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             {
                 var Barbers = await _context.Barbers.ToListAsync();
 
-            return Barbers;
+                return Barbers;
 
-        }
+            }
             catch (DbUpdateException dbUpdateException)
             {
                 throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
 
-    }
-}
+            }
+        }
     }
 }
