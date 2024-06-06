@@ -11,7 +11,7 @@ namespace API_Coyotes_Barber_Shop.DAL.Entities
 
         [Display(Name = "ValorServicio")] // name identifier
         [Required(ErrorMessage = "El campo {0} es obligatorio.")] // Obligatory field  
-        [Range(10000, 20000, ErrorMessage = "El campo {0} debe estar entre 10.000 y 20.000")]
+        [Range(10000, 60000, ErrorMessage = "El campo {0} debe estar entre 10.000 y 60.000")]
         public decimal Precio { get; set; }
 
 
