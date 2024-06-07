@@ -13,6 +13,7 @@ builder.Services.AddDbContext<DataBaseContext>(o => o.UseSqlServer(builder.Confi
 
 //dependency container
 builder.Services.AddScoped<IBarberServices, BarberService>();
+builder.Services.AddScoped<IService_Services, Services_Service>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
