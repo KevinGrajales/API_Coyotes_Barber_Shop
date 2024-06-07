@@ -83,7 +83,7 @@ namespace API_Coyotes_Barber_Shop.Controllers
 
         [HttpGet]
         [Route("GetServiceById")]
-        public async Task<ActionResult<Barber>> GetBarberById(Guid id)
+        public async Task<ActionResult<Service>> GetBarberById(Guid id)
         {
 
             try
@@ -100,7 +100,7 @@ namespace API_Coyotes_Barber_Shop.Controllers
 
         [HttpGet]
         [Route("GetAllService")]
-        public async Task<ActionResult<List<Barber>>> GetBarbersAsync()
+        public async Task<ActionResult<List<Service>>> GetBarbersAsync()
         {
             var services = await _service_Services.GetServicesAsync();
 

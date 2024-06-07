@@ -4,48 +4,50 @@ using API_Coyotes_Barber_Shop.DAL.Entities;
 using System.Diagnostics.Metrics;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using API_Coyotes_Barber_Shop.Domain.Services;
 
 namespace API_Coyotes_Barber_Shop.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BarberController : Controller
+    public class CustomerController : Controller
     {
-        private readonly IBarberServices _barberServices;
+        private readonly ICustomerServices _customerService;
 
-        public BarberController(IBarberServices barberServices)
+        public CustomerController(ICustomerServices customerService)
         {
-            _barberServices = barberServices;
+            _customerService = customerService;
         }
 
         [HttpGet, ActionName("Get")]
-        [Route("GetAllBarbes")]
-        public async Task<ActionResult<List<Barber>>> GetBarbersAsync()
+        [Route("GetAllCustomers")]
+        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomersAsync()
         {
-            var barbers = await _barberServices.GetBarbersAsync();
+            var customers = await _customerService.GetCustomersAsync();
 
-            if (barbers == null || !barbers.Any())
+            if (customers == null || !customers.Any())
             {
                 return NotFound();
             }
 
-            return Ok(barbers);
+            return Ok(customers);
         }
 
         [HttpGet]
-        [Route("GetBarberById")]
-        public async Task<ActionResult<Barber>> GetBarberById(Guid id)
+        [Route("GetCustomerById")]
+        public async Task<ActionResult<Customer>> GetCustomerById(Guid id)
         {
             try
             {
-                var barber = await _barberServices.GetBarberById(id);
+                var customer = await _customerService.GetCustomerById(id);
 
-                if (barber == null)
+                if (customer == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(barber);
+                return Ok(customer);
+            
             }
             catch (ArgumentException ex)
             {
@@ -56,18 +58,16 @@ namespace API_Coyotes_Barber_Shop.Controllers
 
 
 
-
         [HttpDelete]
         [Route("Delete")]
 
-        public async Task<ActionResult<Barber>> DeleteBarberAsync(Guid id)
+        public async Task<ActionResult<Customer>> DeleteCustomerAsync(Guid id)
         {
             try
             {
 
-                var deleteBarber = await _barberServices.DeleteBarberAsync(id);
-
-                if (deleteBarber == null) return NotFound();
+                var deleteCustomer = await _customerService.DeleteCustomerAsync(id);
+                if (deleteCustomer == null) return NotFound();
 
                 return Ok("Borrado satisfactoriamente");
             }
@@ -78,18 +78,18 @@ namespace API_Coyotes_Barber_Shop.Controllers
         }
 
 
-        [HttpPost, ActionName("CreateBarber")]
+        [HttpPost, ActionName("CreateCustomer")]
         [Route("Create")]
-        public async Task<ActionResult<Barber>> CreateBarberAsync(Barber barber)
+        public async Task<ActionResult<Barber>> CreateCustomerAsync(Customer customer)
         {
             try
             {
-                var newBarber = await _barberServices.CreateBarberAsync(barber);
-                if (newBarber == null)
+                var newCustomer = await _customerService.CreateCustomerAsync(customer);
+                if (newCustomer == null)
                 {
                     return NotFound();
                 }
-                return Ok(newBarber);
+                return Ok(newCustomer);
 
             }
             catch (Exception ex)
@@ -102,7 +102,7 @@ namespace API_Coyotes_Barber_Shop.Controllers
 
         [HttpPut]
         [Route("Edit")]
-        public async Task<ActionResult<Barber>> EditBarberAsync(Guid id, [FromBody] UpdateBarberoRequest request)
+        public async Task<ActionResult<Customer>> EditCustomerAsync(Guid id, [FromBody] UpdateCustomerRequest request)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace API_Coyotes_Barber_Shop.Controllers
                     return Ok("Correo o celular incorrecto");
                 }
 
-                var barberUpdate = await _barberServices.EditBarberAsync(id, request.Email, request.CelPhone);
+                var barberUpdate = await _customerService.EditCustomerAsync(id, request.Email, request.CelPhone);
                 if (barberUpdate == null)
                 {
                     return NotFound();
@@ -127,7 +127,7 @@ namespace API_Coyotes_Barber_Shop.Controllers
     }
 }
 
-public class UpdateBarberoRequest
+public class UpdateCustomerRequest
 {
     [EmailAddress(ErrorMessage = "El formato del correo es inválido.")] //
     public string Email { get; set; }
