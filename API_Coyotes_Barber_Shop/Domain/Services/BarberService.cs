@@ -89,13 +89,10 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
 
             try
             {
-
+                var Barber = await _context.Barbers.FirstOrDefaultAsync(b => b.Id == id);
                 // get a object until the DB.
-                var Barber = await _context.Barbers.FindAsync(id);
-                if (Barber == null)
-                {
-                    throw new ArgumentException("El Barbero no existe.");
-                }
+                var Barber1 = await _context.Barbers.FindAsync(id);
+                var Barber2 = await _context.Barbers.FirstAsync(b => b.Id == id);
 
                 return Barber;
 

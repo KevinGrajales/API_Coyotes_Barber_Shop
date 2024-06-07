@@ -36,22 +36,14 @@ namespace API_Coyotes_Barber_Shop.Controllers
         [Route("GetBarberById")]
         public async Task<ActionResult<Barber>> GetBarberById(Guid id)
         {
-            try
-            {
-                var barber = await _barberServices.GetBarberById(id);
+            var barber = await _barberServices.GetBarberById(id);
 
-                if (barber == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(barber);
-            }
-            catch (ArgumentException ex)
+            if (barber == null)
             {
-                return StatusCode(200, new { message = ex.Message });
+                return NotFound();
             }
 
+            return Ok(barber);
         }
 
 
