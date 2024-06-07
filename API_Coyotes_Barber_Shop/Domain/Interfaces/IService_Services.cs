@@ -10,7 +10,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Interfaces
 
         Task<Service> GetServiceById(Guid id);
 
-        Task<Service> EditServiceAsync(Service barber);
+        Task<Service> EditServiceAsync(Guid id, decimal nuevoPrecio);
 
         Task<Service> DeteleteServiceAsync(Guid id);
 
@@ -18,3 +18,5 @@ namespace API_Coyotes_Barber_Shop.Domain.Interfaces
 
     }
 }
+
+

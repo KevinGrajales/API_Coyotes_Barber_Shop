@@ -34,17 +34,57 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
         }
 
 
-        public Task<Service> DeteleteServiceAsync(Guid id)
+        public async Task<Service> DeteleteServiceAsync(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var service = await _context.Services.FindAsync(id);
+                if (service == null)
+                {
+                    throw new ArgumentException("El Servicio no existe.");
+                }
+                _context.Services.Remove(service);
+                await _context.SaveChangesAsync();
+                return service;
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
+
+            }
         }
 
-      
 
 
-        public Task<Service> EditServiceAsync(Service barber)
+
+        public async Task<Service> EditServiceAsync(Guid id, decimal nuevoPrecio)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var service = await _context.Services.FindAsync(id);
+
+                if (service == null)
+                {
+                    throw new ArgumentException("El Servicio no existe");
+                }
+
+                if (!IsDecimal(nuevoPrecio))
+                {
+                    throw new ArgumentException("El nuevo precio no es un número decimal.");
+                }
+                if (nuevoPrecio < 10000 || nuevoPrecio > 60000)
+                {
+                    throw new ArgumentException("El nuevo precio debe estar entre 10,000 y 60,000.");
+                }
+                service.Precio = nuevoPrecio;
+                await _context.SaveChangesAsync();
+                return service;
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
+
+            }
         }
 
         public async Task<Service> GetServiceById(Guid id)
@@ -52,12 +92,16 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
 
             try
             {
-                var Service = await _context.Services.FirstOrDefaultAsync(b => b.Id == id);
-                // get a object until the DB.
-                var Service1 = await _context.Services.FindAsync(id);
-                var Service2 = await _context.Services.FirstAsync(b => b.Id == id);
+                var Service = await _context.Services.FindAsync(id);
+                if (Service == null)
+                {
+                    throw new ArgumentException("El Servicio no existe.");
+                }
+                else
+                {
+                    return Service;
+                }
 
-                return Service;
 
             }
             catch (DbUpdateException dbUpdateException)
@@ -84,6 +128,12 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             }
         }
 
-        
+        //method to find out if it is decimal or not
+
+        private bool IsDecimal(decimal value)
+        {
+            return decimal.TryParse(value.ToString(), out _);
+        }
     }
 }
+
