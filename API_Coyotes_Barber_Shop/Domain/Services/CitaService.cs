@@ -87,18 +87,57 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
 
         public Task<Cita> DeleteCitaAsync(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var cita = await _context.Cita.FindAsync(id);
+                if (cita == null)
+                {
+                    throw new ArgumentException("La cita no existe");
+                }
+                _context.Cita.Remove(cita);
+                await _context.SaveChangesAsync();
+                return cita;
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
+            }
         }
+    
 
         public Task<IEnumerable<Cita>> GetCitaAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var Citas = await _context.Cita.ToListAsync();
+
+                return Citas;
+
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
+
+            }
         }
+
+
 
         public Task<IEnumerable<Cita>> GetCitaByBarberIdAsync(Guid barberId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var citas = await _context.Cita.Where(cita => cita.BarberId == barberId).ToListAsync();
+                return citas;
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+
+                throw new Exception(dbUpdateException.InnerException?.Message ??
+                    dbUpdateException.Message);
+            }
         }
+
         public async Task<Cita> GetCitaByIdAsync(Guid id)
         {
             var cita = await _context.Cita.FindAsync(id);
@@ -140,9 +179,78 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             }
         }
     
-        public Task<Cita> UpdateCitaAsync(Guid id)
+        
+        public async Task<Cita> UpdateCitaAsync(Guid id, int serviceId, string nameService, int customerId, string nameCustomer, int barberId, string nameBarber, DateTime date, TimeSpan time, decimal price)
         {
-            throw new NotImplementedException();
+            var cita = await _context.Cita.FindAsync(id);
+
+            if (cita == null)
+            {
+                throw new ArgumentException("La cita especificada no existe.");
+            }
+
+            var idService = await _context.Services.FindAsync(serviceId);
+            var idCustomer = await _context.Customers.FindAsync(customerId);
+            var idBarber = await _context.Barbers.FindAsync(barberId);
+
+            if (idService == null)
+            {
+                throw new ArgumentException("El Servicio especificado no existe.");
+            }
+            else if (idService.Name != nameService)
+            {
+                throw new ArgumentException("El nombre del Servicio especificado no existe.");
+            }
+            else if (idService.Precio != price)
+            {
+                throw new ArgumentException("El precio del servicio es erroneo");
+            }
+
+            if (idCustomer == null)
+            {
+                throw new ArgumentException("El Cliente especificado no existe.");
+            }
+            else if (idCustomer.Name != nameCustomer)
+            {
+                throw new ArgumentException("El nombre del Cliente especificado no existe.");
+            }
+
+            if (idBarber == null)
+            {
+                throw new ArgumentException("El Barber especificado no existe.");
+            }
+            else if (idBarber.Name != nameBarber)
+            {
+                throw new ArgumentException("El nombre del Barbero especificado no existe.");
+            }
+
+            bool isBarberAvailable = await _context.Cita
+                        .AnyAsync(a => a.BarberId == barberId &&
+                         a.Date == date &&
+                         a.Time == time &&
+                         a.Id != id); 
+
+            if (isBarberAvailable)
+            {
+                throw new ArgumentException("Barber no disponible en esta fecha y hora");
+            }
+
+            
+            cita.ServiceId = serviceId;
+            cita.NameService = nameService;
+            cita.CustomerId = customerId;
+            cita.NameCustomer = nameCustomer;
+            cita.BarberId = barberId;
+            cita.NameBarber = nameBarber;
+            cita.Date = date;
+            cita.Time = time;
+            cita.Price = price;
+
+            _context.Cita.Update(cita);
+            await _context.SaveChangesAsync();
+
+            return cita;
         }
+
     }
 }
