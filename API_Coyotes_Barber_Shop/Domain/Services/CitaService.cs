@@ -14,7 +14,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             _context = context;
         }
 
-        public async Task<Cita> CreateCitaAsync(Guid serviceId, string nameService, Guid customerId, string nameCustomer, Guid barberId, string nameBarber, DateTime date, string time, decimal price, bool payment)
+        public async Task<Cita> CreateCitaAsync(Guid serviceId, string nameService, Guid customerId, string nameCustomer, Guid barberId, string nameBarber, DateTime date, string time, decimal price)
         {
             var idService = await _context.Services.FindAsync(serviceId);
             var idCustomer = await _context.Customers.FindAsync(customerId);
@@ -68,8 +68,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
                     NameBarber = nameBarber,
                     Date = date,
                     Time = time,
-                    Price = price,
-                    Payment = payment
+                    Price = price
                 };
                 _context.Add(cita);
                 await _context.SaveChangesAsync();
@@ -234,5 +233,6 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
 
             return cita;
         }
+
     }
 }

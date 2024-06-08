@@ -10,9 +10,9 @@ namespace API_Coyotes_Barber_Shop.Domain.Interfaces
 
         Task<Cita> GetCitaByIdAsync(Guid id);
 
-        Task<Cita> CreateCitaAsync(Guid serviceId, string nameService, Guid customerId, string nameCustomer, Guid barberId, string nameBarber, DateTime date, string time, decimal price, bool payment);
+        Task<Cita> CreateCitaAsync(Guid serviceId, string nameService, Guid customerId, string nameCustomer, Guid barberId, string nameBarber, DateTime date, string time, decimal price);
 
-        Task<Cita> UpdateCitaAsync(Guid id, string nameService, Guid customerId, string nameCustomer, Guid barberId, string nameBarber, DateTime date, string time, decimal price, bool payment););
+        Task<Cita> UpdateCitaAsync(Guid id, Guid serviceId, string nameService, Guid customerId, string nameCustomer, Guid barberId, string nameBarber, DateTime date, string time, decimal price);
 
         Task<Cita> DeleteCitaAsync(Guid id);
 
