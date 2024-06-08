@@ -36,14 +36,14 @@ namespace API_Coyotes_Barber_Shop.DAL
                 .WithMany()
                 .HasForeignKey(a => a.BarberId);
 
-            // RELATIONSHIPS FOR REVIEWS
+            // RELATIONSHIPS FOR REVIEW
             modelBuilder.Entity<Review>()
-                .HasOne(r => r.Service)
+                .HasOne(r => r.Service) // Relación con Service
                 .WithMany()
                 .HasForeignKey(r => r.ServiceId);
 
             modelBuilder.Entity<Review>()
-                .HasOne(r => r.Customer)
+                .HasOne(r => r.Customer) // Relación con Customer
                 .WithMany()
                 .HasForeignKey(r => r.CustomerId);
         }

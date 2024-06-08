@@ -1,5 +1,6 @@
 ﻿using API_Coyotes_Barber_Shop.DAL.Entities;
 using API_Coyotes_Barber_Shop.Domain.Interfaces;
+using API_Coyotes_Barber_Shop.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,13 @@ namespace API_Coyotes_Barber_Shop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Review>>> GetAllReviews()
+        public async Task<ActionResult<IEnumerable<ReviewResponseDTO>>> GetAllReviews()
         {
             return Ok(await _reviewService.GetAllReviews());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Review>> GetReviewById(Guid id)
+        public async Task<ActionResult<ReviewResponseDTO>> GetReviewById(Guid id)
         {
             var review = await _reviewService.GetReviewById(id);
             if (review == null)
@@ -36,19 +37,40 @@ namespace API_Coyotes_Barber_Shop.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateReview([FromBody] Review review)
+        public async Task<ActionResult> CreateReview([FromBody] ReviewDTO reviewDto)
         {
+            var review = new Review
+            {
+                Id = Guid.NewGuid(),
+                ServiceId = reviewDto.ServiceId,
+                CustomerId = reviewDto.CustomerId,
+                Comment = reviewDto.Comment,
+                Rating = reviewDto.Rating,
+                Date = DateTime.UtcNow
+            };
+
             await _reviewService.CreateReview(review);
-            return CreatedAtAction(nameof(GetReviewById), new { id = review.Id }, review);
+            var reviewResponse = await _reviewService.GetReviewById(review.Id);
+            return CreatedAtAction(nameof(GetReviewById), new { id = review.Id }, reviewResponse);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateReview(Guid id, [FromBody] Review review)
+        public async Task<IActionResult> UpdateReview(Guid id, [FromBody] ReviewDTO reviewDto)
         {
-            if (id != review.Id)
+            if (id == Guid.Empty)
             {
                 return BadRequest();
             }
+
+            var review = new Review
+            {
+                Id = id,
+                ServiceId = reviewDto.ServiceId,
+                CustomerId = reviewDto.CustomerId,
+                Comment = reviewDto.Comment,
+                Rating = reviewDto.Rating,
+                Date = DateTime.UtcNow
+            };
 
             await _reviewService.UpdateReview(review);
             return NoContent();

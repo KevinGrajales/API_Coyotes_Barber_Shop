@@ -1,9 +1,11 @@
 ﻿using API_Coyotes_Barber_Shop.DAL;
 using API_Coyotes_Barber_Shop.DAL.Entities;
 using API_Coyotes_Barber_Shop.Domain.Interfaces;
+using API_Coyotes_Barber_Shop.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace API_Coyotes_Barber_Shop.Domain.Services
@@ -17,14 +19,37 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<Review>> GetAllReviews()
+        public async Task<IEnumerable<ReviewResponseDTO>> GetAllReviews()
         {
-            return await _context.Reviews.ToListAsync();
+            return await _context.Reviews
+                .Include(r => r.Customer) // Incluir entidad relacionada Customer
+                .Select(r => new ReviewResponseDTO
+                {
+                    Id = r.Id,
+                    CustomerName = $"{r.Customer.Name} {r.Customer.LastName}",
+                    Comment = r.Comment,
+                    Rating = r.Rating,
+                    Date = r.Date
+                })
+                .ToListAsync();
         }
 
-        public async Task<Review> GetReviewById(Guid id)
+        public async Task<ReviewResponseDTO> GetReviewById(Guid id)
         {
-            return await _context.Reviews.FindAsync(id);
+            var review = await _context.Reviews
+                .Include(r => r.Customer)
+                .Where(r => r.Id == id)
+                .Select(r => new ReviewResponseDTO
+                {
+                    Id = r.Id,
+                    CustomerName = $"{r.Customer.Name} {r.Customer.LastName}",
+                    Comment = r.Comment,
+                    Rating = r.Rating,
+                    Date = r.Date
+                })
+                .FirstOrDefaultAsync();
+
+            return review;
         }
 
         public async Task CreateReview(Review review)
@@ -43,11 +68,8 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
         public async Task DeleteReview(Guid id)
         {
             var review = await _context.Reviews.FindAsync(id);
-            if (review != null)
-            {
-                _context.Reviews.Remove(review);
-                await _context.SaveChangesAsync();
-            }
+            _context.Reviews.Remove(review);
+            await _context.SaveChangesAsync();
         }
     }
 }
