@@ -35,6 +35,17 @@ namespace API_Coyotes_Barber_Shop.DAL
                 .HasOne(a => a.Barber)
                 .WithMany()
                 .HasForeignKey(a => a.BarberId);
+
+            // RELATIONSHIPS FOR REVIEWS
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Service)
+                .WithMany()
+                .HasForeignKey(r => r.ServiceId);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Customer)
+                .WithMany()
+                .HasForeignKey(r => r.CustomerId);
         }
 
 
@@ -44,8 +55,9 @@ namespace API_Coyotes_Barber_Shop.DAL
         public DbSet<Barber> Barbers { get; set; }
         public DbSet<Service> Services { get; set; }
 
-        public DbSet<Cita> Cita { get; set; }   
+        public DbSet<Cita> Cita { get; set; }
 
+        public DbSet<Review> Reviews { get; set; }
 
         #endregion
 
