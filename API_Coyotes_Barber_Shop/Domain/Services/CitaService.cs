@@ -20,8 +20,6 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             var idCustomer = await _context.Customers.FindAsync(customerId);
             var idBarber = await _context.Barbers.FindAsync(barberId);
 
-
-            //
             if (idService == null)
             {
                 throw new ArgumentException("El Servicio especificado no existe.");
@@ -53,7 +51,6 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
                 throw new ArgumentException("El nombre del Barbero especificado no existe.");
             }
 
-            //
             bool isBarberAvailable = await _context.Cita
                         .AnyAsync(a => a.BarberId == barberId &&
                          a.Date == date &&
@@ -72,7 +69,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
                     Date = date,
                     Time = time,
                     Price = price,
-                    Payment = false
+                    Payment = payment
                 };
                 _context.Add(cita);
                 await _context.SaveChangesAsync();
@@ -82,10 +79,9 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             {
                 throw new ArgumentException("Barber no disponible en esta fecha y hora");
             }
-
         }
 
-        public Task<Cita> DeleteCitaAsync(Guid id)
+        public async Task<Cita> DeleteCitaAsync(Guid id)
         {
             try
             {
@@ -103,27 +99,21 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
                 throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
             }
         }
-    
 
-        public Task<IEnumerable<Cita>> GetCitaAsync()
+        public async Task<IEnumerable<Cita>> GetCitaAsync()
         {
             try
             {
                 var Citas = await _context.Cita.ToListAsync();
-
                 return Citas;
-
             }
             catch (DbUpdateException dbUpdateException)
             {
                 throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
-
             }
         }
 
-
-
-        public Task<IEnumerable<Cita>> GetCitaByBarberIdAsync(Guid barberId)
+        public async Task<IEnumerable<Cita>> GetCitaByBarberIdAsync(Guid barberId)
         {
             try
             {
@@ -132,9 +122,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             }
             catch (DbUpdateException dbUpdateException)
             {
-
-                throw new Exception(dbUpdateException.InnerException?.Message ??
-                    dbUpdateException.Message);
+                throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
             }
         }
 
@@ -143,7 +131,6 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             var cita = await _context.Cita.FindAsync(id);
             if (cita == null)
             {
-
                 throw new ArgumentException("La cita no existe.");
             }
             else
@@ -163,7 +150,7 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
                 }
                 if (cita.Payment == true)
                 {
-                    throw new ArgumentException("La cita ya esta paga");
+                    throw new ArgumentException("La cita ya está pagada");
                 }
 
                 cita.Payment = true;
@@ -173,14 +160,11 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             }
             catch (DbUpdateException dbUpdateException)
             {
-
-                throw new Exception(dbUpdateException.InnerException?.Message ??
-                    dbUpdateException.Message);
+                throw new Exception(dbUpdateException.InnerException?.Message ?? dbUpdateException.Message);
             }
         }
-    
-        
-        public async Task<Cita> UpdateCitaAsync(Guid id, int serviceId, string nameService, int customerId, string nameCustomer, int barberId, string nameBarber, DateTime date, TimeSpan time, decimal price)
+
+        public async Task<Cita> UpdateCitaAsync(Guid id, Guid serviceId, string nameService, Guid customerId, string nameCustomer, Guid barberId, string nameBarber, DateTime date, string time, decimal price)
         {
             var cita = await _context.Cita.FindAsync(id);
 
@@ -228,14 +212,13 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
                         .AnyAsync(a => a.BarberId == barberId &&
                          a.Date == date &&
                          a.Time == time &&
-                         a.Id != id); 
+                         a.Id != id);
 
             if (isBarberAvailable)
             {
                 throw new ArgumentException("Barber no disponible en esta fecha y hora");
             }
 
-            
             cita.ServiceId = serviceId;
             cita.NameService = nameService;
             cita.CustomerId = customerId;
@@ -251,6 +234,5 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
 
             return cita;
         }
-
     }
 }
