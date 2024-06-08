@@ -113,11 +113,33 @@ namespace API_Coyotes_Barber_Shop.Domain.Services
             }
         }
 
-        public Task<Cita> PayCiteAsync(Guid id)
+        public async Task<Cita> PayCiteAsync(Guid id)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var cita = await GetCitaByIdAsync(id);
+                if (cita == null)
+                {
+                    throw new ArgumentException("La cita no existe");
+                }
+                if (cita.Payment == true)
+                {
+                    throw new ArgumentException("La cita ya esta paga");
+                }
 
+                cita.Payment = true;
+                _context.Cita.Update(cita);
+                await _context.SaveChangesAsync();
+                return cita;
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+
+                throw new Exception(dbUpdateException.InnerException?.Message ??
+                    dbUpdateException.Message);
+            }
+        }
+    
         public Task<Cita> UpdateCitaAsync(Guid id)
         {
             throw new NotImplementedException();

@@ -50,6 +50,21 @@ namespace API_Coyotes_Barber_Shop.Controllers
                 return StatusCode(200, new { message = ex.Message });
             }
         }
+        [HttpPut]
+        [Route("Payment")]
+        public async Task<ActionResult<Cita>> PayCiteAsync(Guid id)
+        {
+            try
+            {
+                var updatePayment = await _citaServices.PayCiteAsync(id);
+                if (updatePayment == null) return NotFound();
+                return Ok(updatePayment);
+            }
+            catch (ArgumentException ex)
+            {
+                return StatusCode(200, new { message = ex.Message });
+            }
+        }
 
     }
 }
